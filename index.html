@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ติดต่อใครเอ่ย</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            background-image: url('https://via.placeholder.com/1920x1080'); /* เปลี่ยน URL เป็นรูปภาพที่ต้องการ */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* ความคมชัด 60% */
+            z-index: -1;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        h2 {
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .contact-card {
+            background-color: rgba(249, 249, 249, 0.9);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .contact-card.highlight {
+            background-color: rgba(255, 243, 205, 0.9);
+            border-color: #ffca2c;
+        }
+        .contact-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .phone-link {
+            position: relative;
+            text-decoration: none;
+            color: #008000;
+            font-size: 20px;
+        }
+        .phone-link:hover {
+            color: #006600;
+        }
+        .phone-link .tooltip {
+            visibility: hidden;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 5px 10px;
+            border-radius: 4px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .phone-link:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        #search-results {
+            margin-bottom: 40px;
+        }
+        #result-count {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .hidden {
+            display: none;
+        }
+        .control-bar {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #department-menu {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: rgba(255, 255, 255, 0.9);
+            width: 200px;
+        }
+        #full-display {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+            display: none;
+        }
+        #close-btn {
+            float: right;
+            background-color: #cc0000;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #close-btn:hover {
+            background-color: #990000;
+        }
+        #search-btn {
+            background-color: #0066cc;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #search-btn:hover {
+            background-color: #004d99;
+        }
+        #search-input {
+            width: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: none;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-top: 1px solid #ddd;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #555;
+        }
+        footer a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>ติดต่อใครเอ่ย</h1>
+    
+    <div class="control-bar">
+        <button id="search-btn">ค้นหา</button>
+        <input type="text" id="search-input" placeholder="ค้นหาชื่อ...">
+        <select id="department-menu">
+            <option value="">เลือกฝ่าย</option>
+            <option value="admin">ฝ่ายบริหาร</option>
+            <option value="support">ฝ่ายสนับสนุน</option>
+            <option value="kinder">ครูประจำชั้น - อนุบาล</option>
+            <option value="primary">ครูประจำชั้น - ประถม</option>
+            <option value="secondary">ครูประจำชั้น - มัธยม</option>
+            <option value="others">ครูและบุคลากรอื่นๆ</option>
+        </select>
+    </div>
+    
+    <div id="search-results" class="hidden">
+        <div id="result-count"></div>
+        <div class="card-container" id="results-container"></div>
+    </div>
+
+    <div id="contacts">
+        <div class="section">
+            <h2>โรงเรียน</h2>
+            <div class="card-container">
+                <div class="contact-card" data-name="สำนักงานโรงเรียน">
+                    <img src="https://via.placeholder.com/100" alt="สำนักงานโรงเรียน">
+                    <p>สำนักงานโรงเรียน</p>
+                    <a href="tel:021234567" class="phone-link">📞<span class="tooltip">02-123-4567</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="full-display" class="hidden">
+        <button id="close-btn">ปิด</button>
+        <div id="full-content"></div>
+    </div>
+
+    <div id="departments-data" class="hidden">
+        <div class="section" data-dept="admin">
+            <h2>ฝ่ายบริหาร</h2>
+            <div class="card-container">
+                <div class="contact-card" data-name="ผู้อำนวยการ">
+                    <img src="https://via.placeholder.com/100" alt="ผู้อำนวยการ">
+                    <p>ผู้อำนวยการ</p>
+                    <a href="tel:0812345678" class="phone-link">📞<span class="tooltip">081-234-5678</span></a>
+                </div>
+                <div class="contact-card" data-name="รองผู้อำนวยการ">
+                    <img src="https://via.placeholder.com/100" alt="รองผู้อำนวยการ">
+                    <p>รองผู้อำนวยการ</p>
+                    <a href="tel:0823456789" class="phone-link">📞<span class="tooltip">082-345-6789</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-dept="support">
+            <h2>ฝ่ายสนับสนุน</h2>
+            <div class="card-container">
+                <div class="contact-card" data-name="เจ้าหน้าที่การเงิน">
+                    <img src="https://via.placeholder.com/100" alt="เจ้าหน้าที่การเงิน">
+                    <p>เจ้าหน้าที่การเงิน</p>
+                    <a href="tel:0834567890" class="phone-link">📞<span class="tooltip">083-456-7890</span></a>
+                </div>
+                <div class="contact-card" data-name="เจ้าหน้าที่ธุรการ">
+                    <img src="https://via.placeholder.com/100" alt="เจ้าหน้าที่ธุรการ">
+                    <p>เจ้าหน้าที่ธุรการ</p>
+                    <a href="tel:0845678901" class="phone-link">📞<span class="tooltip">084-567-8901</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-dept="kinder">
+            <h2>ครูประจำชั้น - อนุบาล</h2>
+            <div class="card-container">
+                <div class="contact-card" data-name="ครูอนุบาล 1">
+                    <img src="https://via.placeholder.com/100" alt="ครูอนุบาล 1">
+                    <p>ครูอนุบาล 1</p>
+                    <a href="tel:0856789012" class="phone-link">📞<span class="tooltip">085-678-9012</span></a>
+                </div>
+                <div class="contact-card" data-name="ครูอนุบาล 2">
+                    <img src="https://via.placeholder.com/100" alt="ครูอนุบาล 2">
+                    <p>ครูอนุบาล 2</p>
+                    <a href="tel:0867890123" class="phone-link">📞<span class="tooltip">086-789-0123</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-dept="primary">
+            <h2>ครูประจำชั้น - ประถม</h2>
+            <div class="card-container">
+                <div class="contact-card" data-name="ครูประถม 1">
+                    <img src="https://via.placeholder.com/100" alt="ครูประถม 1">
+                    <p>ครูประถม 1</p>
+                    <a href="tel:0878901234" class="phone-link">📞<span class="tooltip">087-890-1234</span></a>
+                </div>
+                <div class="contact-card" data-name="ครูประถม 2">
+                    <img src="https://via.placeholder.com/100" alt="ครูประถม 2">
+                    <p>ครูประถม 2</p>
+                    <a href="tel:0889012345" class="phone-link">📞<span class="tooltip">088-901-2345</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-dept="secondary">
+            <h2>ครูประจำชั้น - มัธยม</h2>
+            <div class="card-container">
+                <div class="contact-card" data-name="ครูมัธยม 1">
+                    <img src="https://via.placeholder.com/100" alt="ครูมัธยม 1">
+                    <p>ครูมัธยม 1</p>
+                    <a href="tel:0890123456" class="phone-link">📞<span class="tooltip">089-012-3456</span></a>
+                </div>
+                <div class="contact-card" data-name="ครูมัธยม 2">
+                    <img src="https://via.placeholder.com/100" alt="ครูมัธยม 2">
+                    <p>ครูมัธยม 2</p>
+                    <a href="tel:0901234567" class="phone-link">📞<span class="tooltip">090-123-4567</span></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-dept="others">
+            <h2>ครูและบุคลากรอื่นๆ</h2>
+            <div class="card-container">
+                <div class="contact-card" data-name="ครูที่ปรึกษา">
+                    <img src="https://via.placeholder.com/100" alt="ครูที่ปรึกษา">
+                    <p>ครูที่ปรึกษา</p>
+                    <a href="tel:0912345678" class="phone-link">📞<span class="tooltip">091-234-5678</span></a>
+                </div>
+                <div class="contact-card" data-name="เจ้าหน้าที่ห้องสมุด">
+                    <img src="https://via.placeholder.com/100" alt="เจ้าหน้าที่ห้องสมุด">
+                    <p>เจ้าหน้าที่ห้องสมุด</p>
+                    <a href="tel:0923456789" class="phone-link">📞<span class="tooltip">092-345-6789</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>พัฒนาโดย <a href="https://example.com" target="_blank">ทีมงาน xAI</a> | พัฒนาจาก <a href="https://grok.com/" target="_blank">https://grok.com/</a> | ลิขสิทธิ์ © 2025 สงวนลิขสิทธิ์ทั้งหมด</p>
+    </footer>
+
+    <script>
+        // การจัดการปุ่มค้นหาและช่องค้นหา
+        const searchBtn = document.getElementById('search-btn');
+        const searchInput = document.getElementById('search-input');
+        let isSearchVisible = false;
+
+        searchBtn.addEventListener('click', function() {
+            if (!isSearchVisible) {
+                searchInput.style.display = 'inline-block';
+                searchInput.focus();
+                isSearchVisible = true;
+            } else {
+                searchInput.style.display = 'none';
+                searchInput.value = '';
+                resetSearch();
+                isSearchVisible = false;
+            }
+        });
+
+        // ฟังก์ชันค้นหา
+        searchInput.addEventListener('input', function() {
+            let searchTerm = this.value.toLowerCase().trim();
+            let cards = document.getElementsByClassName('contact-card');
+            let searchResults = document.getElementById('search-results');
+            let resultsContainer = document.getElementById('results-container');
+            let resultCount = document.getElementById('result-count');
+            let contactsDiv = document.getElementById('contacts');
+            let fullDisplay = document.getElementById('full-display');
+
+            resultsContainer.innerHTML = '';
+            searchResults.classList.add('hidden');
+            contactsDiv.classList.remove('hidden');
+            fullDisplay.style.display = 'none';
+            resultCount.textContent = '';
+
+            if (searchTerm === '') {
+                for (let card of cards) {
+                    card.style.display = '';
+                    card.classList.remove('highlight');
+                }
+                return;
+            }
+
+            let matches = [];
+            for (let card of cards) {
+                let text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    let clonedCard = card.cloneNode(true);
+                    clonedCard.classList.add('highlight');
+                    matches.push(clonedCard);
+                }
+            }
+
+            if (matches.length > 0) {
+                searchResults.classList.remove('hidden');
+                contactsDiv.classList.add('hidden');
+                resultCount.textContent = `พบ ${matches.length} รายการ`;
+                matches.forEach(match => resultsContainer.appendChild(match));
+            } else {
+                resultCount.textContent = 'ไม่พบรายการที่ตรงกัน';
+                searchResults.classList.remove('hidden');
+                contactsDiv.classList.add('hidden');
+            }
+        });
+
+        // รีเซ็ตการค้นหา
+        function resetSearch() {
+            let searchResults = document.getElementById('search-results');
+            let resultsContainer = document.getElementById('results-container');
+            let resultCount = document.getElementById('result-count');
+            let contactsDiv = document.getElementById('contacts');
+            let fullDisplay = document.getElementById('full-display');
+            let cards = document.getElementsByClassName('contact-card');
+
+            resultsContainer.innerHTML = '';
+            searchResults.classList.add('hidden');
+            contactsDiv.classList.remove('hidden');
+            fullDisplay.style.display = 'none';
+            resultCount.textContent = '';
+
+            for (let card of cards) {
+                card.style.display = '';
+                card.classList.remove('highlight');
+            }
+        }
+
+        // ฟังก์ชันแสดงผลเต็มจอ
+        const departmentMenu = document.getElementById('department-menu');
+        const fullDisplay = document.getElementById('full-display');
+        const fullContent = document.getElementById('full-content');
+        const closeBtn = document.getElementById('close-btn');
+        const departmentsData = document.getElementById('departments-data');
+
+        departmentMenu.addEventListener('change', function() {
+            const selectedDept = this.value;
+            fullContent.innerHTML = '';
+
+            if (selectedDept) {
+                const deptSection = departmentsData.querySelector(`[data-dept="${selectedDept}"]`);
+                if (deptSection) {
+                    fullContent.appendChild(deptSection.cloneNode(true));
+                    fullDisplay.style.display = 'block';
+                }
+            }
+            this.value = '';
+        });
+
+        closeBtn.addEventListener('click', function() {
+            fullDisplay.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
