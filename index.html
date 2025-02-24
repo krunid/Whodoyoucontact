@@ -126,16 +126,16 @@
         }
         #full-display {
             position: fixed;
-            top: 5%; /* ระยะห่างจากด้านบน 5% */
-            left: 5%; /* ระยะห่างจากด้านซ้าย 5% */
-            width: 90%; /* ความกว้าง 90% ของหน้าจอ */
-            height: 90%; /* ความสูง 90% ของหน้าจอ */
+            top: 5%;
+            left: 5%;
+            width: 90%;
+            height: 90%;
             background-color: rgba(255, 255, 255, 0.95);
             z-index: 1000;
             padding: 20px;
             overflow-y: auto;
             display: none;
-            box-sizing: border-box; /* รวม padding ในขนาด */
+            box-sizing: border-box;
         }
         #close-btn {
             float: right;
@@ -185,6 +185,28 @@
         }
         footer a:hover {
             text-decoration: underline;
+        }
+        /* Media Query สำหรับมือถือ */
+        @media (max-width: 768px) {
+            #full-display {
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .card-container {
+                grid-template-columns: 1fr; /* เปลี่ยนเป็น 1 คอลัมน์บนมือถือ */
+            }
+            .control-bar {
+                flex-direction: column; /* จัดเรียงเป็นแนวตั้ง */
+                align-items: stretch;
+            }
+            #search-input {
+                width: 100%; /* ขยายเต็มความกว้าง */
+            }
+            #department-menu {
+                width: 100%; /* ขยายเต็มความกว้าง */
+            }
         }
     </style>
 </head>
